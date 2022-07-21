@@ -1,9 +1,9 @@
 /**
  * @fileoverview
  * Core libraries, interfaces, enums shared across {@class Html5Qrcode} & {@class Html5QrcodeScanner}
- * 
+ *
  * @author mebjas <minhazav@gmail.com>
- * 
+ *
  * The word "QR Code" is registered trademark of DENSO WAVE INCORPORATED
  * http://www.denso-wave.com/qrcode/faqpatent-e.html
  */
@@ -99,9 +99,9 @@ export interface QrDimensions {
 }
 
 /**
- * A function that takes in the width and height of the video stream 
+ * A function that takes in the width and height of the video stream
  * and returns QrDimensions.
- * 
+ *
  * Viewfinder refers to the video showing camera stream.
  */
 export type QrDimensionFunction =
@@ -153,7 +153,7 @@ export interface QrcodeResult {
     /**
      * The bounds of the decoded QR code or bar code in the whole stream of
      * image.
-     * 
+     *
      * Note: this is experimental, and not fully supported.
      */
     bounds?: QrBounds;
@@ -161,7 +161,7 @@ export interface QrcodeResult {
     /**
      * If the decoded text from the QR code or bar code is of a known type like
      * url or upi id or email id.
-     * 
+     *
      * Note: this is experimental, and not fully supported.
      */
     decodedTextType?: DecodedTextType;
@@ -173,6 +173,8 @@ export interface QrcodeResult {
 export interface Html5QrcodeResult {
     decodedText: string;
     result: QrcodeResult;
+    captureTime?: number;
+    decodedTime?: number;
 }
 
 /**
@@ -190,11 +192,13 @@ export class Html5QrcodeResultFactory {
         };
     }
 
-    static createFromQrcodeResult(qrcodeResult: QrcodeResult)
+    static createFromQrcodeResult(qrcodeResult: QrcodeResult, captureTime?: number)
         : Html5QrcodeResult {
         return {
             decodedText: qrcodeResult.text,
-            result: qrcodeResult
+            result: qrcodeResult,
+            captureTime,
+            decodedTime: Date.now(),
         };
     }
 }
@@ -250,7 +254,7 @@ export interface CameraDevice {
 export interface QrcodeDecoderAsync {
     /**
      * Decodes content of the canvas to find a valid QR code or bar code.
-     * 
+     *
      * @param canvas a valid html5 canvas element.
      */
     decodeAsync(canvas: HTMLCanvasElement): Promise<QrcodeResult>;
@@ -266,7 +270,7 @@ export interface Logger {
 
 /**
  * Base logger implementation based on browser console.
- * 
+ *
  * This can be replaced by a custom implementation of logger.
  *
  */
